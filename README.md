@@ -71,7 +71,7 @@ See [Importing Code Example into ModusToolbox IDE - KBA225201](https://community
 
 6. Open a terminal program and select the KitProg3 COM port. Set the serial port parameters to 8N1 and 115200 baud.
 
-7. Ensure Python 3.7.x is installed on your computer
+7. Ensure Python 2.7.x is installed on your computer
 
 8. Open a command shell and run the python TCP echo server (tcp_server.py ) from the project directory.
 
