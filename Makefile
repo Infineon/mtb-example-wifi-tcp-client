@@ -68,13 +68,6 @@ VERBOSE=
 #
 COMPONENTS=FREERTOS LWIP MBEDTLS 
 
-# Add connectivity device based on the TARGET board
-ifeq ($(TARGET), CY8CPROTO-062-4343W)
-COMPONENTS+=4343W 
-else ifeq ($(TARGET), CY8CKIT-062S2-43012)
-COMPONENTS+=43012
-endif  
-
 # Like COMPONENTS, but disable optional code that was enabled by default.
 DISABLE_COMPONENTS=
 
@@ -89,10 +82,10 @@ SOURCES=
 INCLUDES=
 
 # Custom configuration of mbedtls library.
-MBEDTLSFLAGS = MBEDTLS_USER_CONFIG_FILE='"configs/mbedtls_user_config.h"'
+MBEDTLSFLAGS = MBEDTLS_USER_CONFIG_FILE='"mbedtls_user_config.h"'
 
 # Add additional defines to the build process (without a leading -D).
-DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RETARGET_IO_CONVERT_LF_TO_CRLF CY_SD_HOST_CLK_RAMP_UP_TIME_MS_WAKEUP=0 CY_RTOS_AWARE 
+DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RETARGET_IO_CONVERT_LF_TO_CRLF CY_RTOS_AWARE 
 
 # Select softfp or hardfp floating point. Default is softfp.
 VFP_SELECT=

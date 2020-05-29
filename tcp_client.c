@@ -44,6 +44,7 @@
 /* FreeRTOS header file. */
 #include <FreeRTOS.h>
 #include <task.h>
+#include <semphr.h>
 
 /* Standard C header file. */
 #include <string.h>
@@ -62,17 +63,13 @@
 * Macros
 ********************************************************************************/
 /* Maximum number of connection retries to the TCP server. */
-#define MAX_TCP_SERVER_CONN_RETRIES       (5u)
+#define MAX_TCP_SERVER_CONN_RETRIES        (5u)
 
 /* Length of the TCP data packet. */
-#define MAX_TCP_DATA_PACKET_LENGTH        (20)
+#define MAX_TCP_DATA_PACKET_LENGTH         (20)
 
 /* Length of the LED ON/OFF command issued from the TCP server. */
-#define TCP_LED_CMD_LEN                   (1)
-
-/* RTOS related macros. */
-#define RTOS_TASK_TICKS_TO_WAIT           (1000)
-
+#define TCP_LED_CMD_LEN                    (1)
 #define LED_ON_CMD                         '1'
 #define LED_OFF_CMD                        '0'
 #define ACK_LED_ON                         "LED ON ACK"
@@ -94,8 +91,8 @@ cy_rslt_t connect_to_wifi_ap(void);
 /* TCP client socket handle */
 cy_socket_t client_handle;
 
-/* Variable to check if a TCP server is connected. */
-bool server_connected = false;
+/* Binary semaphore handle to keep track of TCP server connection. */
+SemaphoreHandle_t connect_to_server;
 
 /*******************************************************************************
  * Function Name: tcp_client_task
@@ -116,13 +113,20 @@ void tcp_client_task(void *arg)
     cy_rslt_t result ;
 
     /* IP address and TCP port number of the TCP server to which the TCP client
-     * connects to. */
+     * connects to. 
+     */
     cy_socket_sockaddr_t tcp_server_address =
     {
         .ip_address.ip.v4 = TCP_SERVER_IP_ADDRESS,
         .ip_address.version = CY_SOCKET_IP_VER_V4,
         .port = TCP_SERVER_PORT
     };
+
+    /* Create a binary semaphore to keep track of TCP server connection. */
+    connect_to_server = xSemaphoreCreateBinary();
+
+    /* Give the semaphore so as to connect to TCP server.  */
+    xSemaphoreGive(connect_to_server);
 
     /* Connect to Wi-Fi AP */
     if(connect_to_wifi_ap() != CY_RSLT_SUCCESS )
@@ -142,21 +146,20 @@ void tcp_client_task(void *arg)
 
     for(;;)
     {
-        if(server_connected == false)
+        /* Wait till semaphore is acquired so as to connect to a TCP server. */
+        xSemaphoreTake(connect_to_server, portMAX_DELAY);
+
+        /* Connect to the TCP server. If the connection fails, retry
+         * to connect to the server for MAX_TCP_SERVER_CONN_RETRIES times.
+         */
+        printf("Connecting to TCP server...\n");
+        result = connect_to_tcp_server(tcp_server_address);
+
+        if(result != CY_RSLT_SUCCESS)
         {
-            /* Connect to the secure TCP server. If the connection fails, retry
-             * to connect to the server for MAX_TCP_SERVER_CONN_RETRIES times. */
-            printf("Connecting to TCP Server...\n");
-            result = connect_to_tcp_server(tcp_server_address);
-
-            if(result != CY_RSLT_SUCCESS)
-            {
-                printf("Failed to connect to TCP server.\n");
-                CY_ASSERT(0);
-            }
+            printf("Failed to connect to TCP server.\n");
+            CY_ASSERT(0);
         }
-
-        vTaskDelay(RTOS_TASK_TICKS_TO_WAIT);
     }
  }
 
@@ -311,12 +314,12 @@ cy_rslt_t connect_to_tcp_server(cy_socket_sockaddr_t address)
         {
             printf("============================================================\n");
             printf("Connected to TCP server\n");
-            server_connected = true;
+
             return conn_result;
         }
 
-        printf("Could not connect to TCP Server.\n");
-        printf("Trying to reconnect to TCP Server... Please check if the server is listening\n");
+        printf("Could not connect to TCP server.\n");
+        printf("Trying to reconnect to TCP server... Please check if the server is listening\n");
 
         /* The resources allocated during the socket creation (cy_socket_create)
          * should be deleted.
@@ -414,9 +417,10 @@ cy_rslt_t tcp_disconnection_handler(cy_socket_t socket_handle, void *arg)
     /* Free the resources allocated to the socket. */
     cy_socket_delete(socket_handle);
 
-    /* Set the client connection flag as false. */
-    server_connected = false;
     printf("Disconnected from the TCP server! \n");
+
+    /* Give the semaphore so as to connect to TCP server.  */
+    xSemaphoreGive(connect_to_server);
 
     return result;
 }

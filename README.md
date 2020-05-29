@@ -18,7 +18,7 @@ This example uses the [Wi-Fi middleware core](https://github.com/cypresssemicond
 
 ## Hardware Setup
 
-This example uses the board's default configuration. See the kit user guide to ensure the board is configured correctly.
+This example uses the board's default configuration. See the kit user guide to ensure that the board is configured correctly.
 
 **Note**: The PSoC 6 BLE Pioneer Kit (CY8CKIT-062-BLE) and the PSoC 6 WiFi-BT Pioneer Kit (CY8CKIT-062-WIFI-BT) ship with KitProg2 installed. ModusToolbox software requires KitProg3. Before using this code example, make sure that the board is upgraded to KitProg3. The tool and instructions are available in the [Firmware Loader](https://github.com/cypresssemiconductorco/Firmware-loader) GitHub repository. If you do not upgrade, you will see an error like "unable to find CMSIS-DAP device" or "KitProg firmware is out of date".
 
@@ -53,7 +53,7 @@ For more details, see the Eclipse IDE for ModusToolbox User Guide: *{ModusToolbo
 
 1. Download and unzip this repository onto your local machine, or clone the repository.
 
-2. Open a CLI terminal and navigate to the application folder. 
+2. Open a CLI terminal and navigate to the application folder.
 
 On Linux and macOS, you can use any terminal application. On Windows, navigate to the modus-shell directory (*{ModusToolbox install directory}/tools_\<version>/modus-shell*) and run *Cygwin.bat*.
 
@@ -98,7 +98,7 @@ For more details, see the "Exporting to IDEs" section of the ModusToolbox User G
 
 7. Ensure that the Python interpreter (see **Software Setup**) is installed on your computer.
 
-8. Open a command shell from the project directory and run the Python TCP server (*tcp_server.py*). Note that script will not run in the *modus-shell*. In the command shell opened in the project directory, type in the following command:
+8. Open a command shell from the project directory and run the Python TCP server (*tcp_server.py*). In the command shell opened in the project directory, type in the following command:
 
    ```
    python tcp_server.py
@@ -196,7 +196,7 @@ In this example, PSoC 6 MCU is configured as a TCP client, which establishes a c
 | Cypress Hardware Abstraction Layer (HAL) Library and docs          | [psoc6hal](https://github.com/cypresssemiconductorco/psoc6hal) on GitHub |
 | RetargetIO - A utility library to retarget the standard input/output (STDIO) messages to a UART port | [retarget-io](https://github.com/cypresssemiconductorco/retarget-io) on GitHub |
 | **Middleware**                                               |                                                              |
-| Wi-Fi Middleware Core  libraray                                    | [wifi-mw-core](https://github.com/cypresssemiconductorco/wifi-mw-core) on GitHub |
+| Wi-Fi Middleware Core  library                                    | [wifi-mw-core](https://github.com/cypresssemiconductorco/wifi-mw-core) on GitHub |
 | CapSense library and docs                                    | [capsense](https://github.com/cypresssemiconductorco/capsense) on GitHub |
 | Links to all PSoC 6 MCU Middleware                           | [psoc6-middleware](https://github.com/cypresssemiconductorco/psoc6-middleware) on GitHub |
 | **Tools**                                                    |                                                              |
@@ -217,12 +217,13 @@ Document Title: CE229112 - AnyCloud Example: TCP Client
 | ------- | --------------------- |
 | 1.0.0   | New code example      |
 | 1.1.0   | Updated for ModusToobox 2.1. <br>Code updated to use Cypress Secure Sockets and Wi-Fi connection manager libraries.    |
+| 1.2.0   | Makefile updated to sync with BSP changes. <br>Code updated to use binary semaphore. |
 
 ------
 
 All other trademarks or registered trademarks referenced herein are the property of their respective owners.
 
-![Banner](images/Banner.png)
+![banner](images/footer_banner.png)
 
 -------------------------------------------------------------------------------
 
