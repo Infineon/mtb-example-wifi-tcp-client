@@ -170,10 +170,14 @@ standard names. */
 
 #define configHEAP_ALLOCATION_SCHEME                (HEAP_ALLOCATION_TYPE3)
 
-#if (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_SLEEP) || (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP)
+#if defined(CY_CFG_PWR_SYS_IDLE_MODE) && \
+    ((CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_SLEEP) || \
+    (CY_CFG_PWR_SYS_IDLE_MODE == CY_CFG_PWR_MODE_DEEPSLEEP))
 extern void vApplicationSleep( uint32_t xExpectedIdleTime );
 #define portSUPPRESS_TICKS_AND_SLEEP( xIdleTime ) vApplicationSleep( xIdleTime )
-#define configUSE_TICKLESS_IDLE  2
+#define configUSE_TICKLESS_IDLE     2
+#else
+#define configUSE_TICKLESS_IDLE     0
 #endif
 
 /* Deep Sleep Latency Configuration */
