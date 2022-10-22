@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2021, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2019-2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -63,7 +63,8 @@
 /* TCP client task header file. */
 #include "tcp_client.h"
 
-#include "cy_lwip.h"
+/* IP address related header files (part of the lwIP TCP/IP stack). */
+#include "ip_addr.h"     
 
 /* Standard C header files */
 #include <inttypes.h>

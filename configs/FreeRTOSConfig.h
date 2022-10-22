@@ -4,7 +4,7 @@
 * Description: This is the configuration file for FreeRTOS parameters
 *
 *******************************************************************************
-* Copyright 2020-2021, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2020-2022, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -61,6 +61,7 @@
  */
 #include "cycfg_system.h"
 
+
 #define configUSE_PREEMPTION                    1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configCPU_CLOCK_HZ                      SystemCoreClock
@@ -106,7 +107,7 @@
 #define configUSE_TIMERS                        1
 #define configTIMER_TASK_PRIORITY               2
 #define configTIMER_QUEUE_LENGTH                10
-#define configTIMER_TASK_STACK_DEPTH            ( configMINIMAL_STACK_SIZE * 2 )
+#define configTIMER_TASK_STACK_DEPTH            (configMINIMAL_STACK_SIZE * 2)
 
 /*
 Interrupt nesting behavior configuration.
