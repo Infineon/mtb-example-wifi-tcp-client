@@ -106,16 +106,6 @@ MBEDTLSFLAGS = MBEDTLS_USER_CONFIG_FILE='"mbedtls_user_config.h"'
 # Add additional defines to the build process (without a leading -D).
 DEFINES=$(MBEDTLSFLAGS) CYBSP_WIFI_CAPABLE CY_RETARGET_IO_CONVERT_LF_TO_CRLF CY_RTOS_AWARE 
 
-
-
-
-
-
-
-
-
-
-
 # Select softfp or hardfp floating point. Default is softfp.
 VFP_SELECT=
 
@@ -151,6 +141,9 @@ PREBUILD=
 
 # Custom post-build commands to run.
 POSTBUILD=
+
+# To change the default policy
+CY_SECURE_POLICY_NAME=policy_single_CM0_CM4_smif_swap
 
 
 ################################################################################
