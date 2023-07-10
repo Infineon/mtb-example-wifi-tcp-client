@@ -9,7 +9,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2022, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2019-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -46,28 +46,35 @@
 #include "cybsp.h"
 #include "cy_retarget_io.h"
 
-/* FreeRTOS header file. */
+/* RTOS header file. */
+#if defined (COMPONENT_FREERTOS)
 #include <FreeRTOS.h>
 #include <task.h>
 
+#elif defined (COMPONENT_THREADX)
+#include "tx_api.h"
+#include "tx_initialize.h"
+#endif
+
 /* TCP client task header file. */
 #include "tcp_client.h"
- 
+
 /* Include serial flash library and QSPI memory configurations only for the
  * kits that require the Wi-Fi firmware to be loaded in external QSPI NOR flash.
  */
 #if defined(CY_DEVICE_PSOC6A512K)
 #include "cy_serial_flash_qspi.h"
 #include "cycfg_qspi_memslot.h"
-
 #endif
 
 /*******************************************************************************
 * Macros
 ********************************************************************************/
 /* RTOS related macros. */
+#if defined (COMPONENT_FREERTOS)
 #define TCP_CLIENT_TASK_STACK_SIZE        (5 * 1024)
 #define TCP_CLIENT_TASK_PRIORITY          (1)
+#endif
 
 /*******************************************************************************
 * Global Variables
@@ -93,13 +100,17 @@ int main()
 {
     cy_rslt_t result;
 
+#if defined (COMPONENT_FREERTOS)
     /* This enables RTOS aware debugging in OpenOCD. */
     uxTopUsedPriority = configMAX_PRIORITIES - 1;
+#elif defined (COMPONENT_THREADX)
+    uxTopUsedPriority = TX_MAX_PRIORITIES - 1;
+#endif
 
     /* Initialize the board support package. */
     result = cybsp_init() ;
     CY_ASSERT(result == CY_RSLT_SUCCESS);
-    
+
     /* To avoid compiler warnings. */
     (void) result;
 
@@ -114,7 +125,7 @@ int main()
     cyhal_gpio_init(CYBSP_USER_LED, CYHAL_GPIO_DIR_OUTPUT,
                         CYHAL_GPIO_DRIVE_STRONG, CYBSP_LED_STATE_OFF);
 
-    #if defined(CY_DEVICE_PSOC6A512K)
+#if defined(CY_DEVICE_PSOC6A512K)
     const uint32_t bus_frequency = 50000000lu;
     cy_serial_flash_qspi_init(smifMemConfigs[0], CYBSP_QSPI_D0, CYBSP_QSPI_D1,
                                   CYBSP_QSPI_D2, CYBSP_QSPI_D3, NC, NC, NC, NC,
@@ -122,16 +133,17 @@ int main()
 
     /* Enable the XIP mode to get the Wi-Fi firmware from the external flash. */
     cy_serial_flash_qspi_enable_xip(true);
-    #endif 
-    
+#endif
+
     /* \x1b[2J\x1b[;H - ANSI ESC sequence to clear screen */
     printf("\x1b[2J\x1b[;H");
     printf("============================================================\n");
     printf("CE229112 - Connectivity Example: TCP Client\n");
     printf("============================================================\n\n");
 
+#if defined (COMPONENT_FREERTOS)
     /* Create the tasks. */
-    xTaskCreate(tcp_client_task, "Network task", TCP_CLIENT_TASK_STACK_SIZE, NULL, 
+    xTaskCreate(tcp_client_task, "Network task", TCP_CLIENT_TASK_STACK_SIZE, NULL,
                 TCP_CLIENT_TASK_PRIORITY, NULL);
 
     /* Start the FreeRTOS scheduler. */
@@ -139,6 +151,26 @@ int main()
 
     /* Should never get here. */
     CY_ASSERT(0);
+
+#elif defined (COMPONENT_THREADX)
+    /*
+    * Start the ThreadX kernel.
+    * This routine never returns.
+    */
+
+    tx_kernel_enter();
+
+    /* Should never get here. */
+    CY_ASSERT(0);
+#endif
 }
- 
- /* [] END OF FILE */ 
+
+#if defined (COMPONENT_THREADX)
+void application_start(void)
+{
+    tcp_client_task(NULL);
+}
+#endif
+
+
+ /* [] END OF FILE */

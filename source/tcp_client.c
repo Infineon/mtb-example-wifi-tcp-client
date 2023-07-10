@@ -8,7 +8,7 @@
 *
 *
 *******************************************************************************
-* Copyright 2019-2022, Cypress Semiconductor Corporation (an Infineon company) or
+* Copyright 2019-2023, Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
 *
 * This software, including source code, documentation and related
@@ -45,10 +45,8 @@
 #include "cybsp.h"
 #include "cy_retarget_io.h"
 
-/* FreeRTOS header file. */
-#include <FreeRTOS.h>
-#include <task.h>
-#include <semphr.h>
+/* RTOS header file. */
+#include "cyabs_rtos.h"
 
 /* Standard C header file. */
 #include <string.h>
@@ -63,8 +61,8 @@
 /* TCP client task header file. */
 #include "tcp_client.h"
 
-/* IP address related header files (part of the lwIP TCP/IP stack). */
-#include "ip_addr.h"     
+/* IP address related header files. */
+#include "cy_nw_helper.h"
 
 /* Standard C header files */
 #include <inttypes.h>
@@ -143,7 +141,10 @@
 #define ASCII_BACKSPACE                           (0x08)
 #define RTOS_TICK_TO_WAIT                         (50u)
 #define UART_INPUT_TIMEOUT_MS                     (1u)
-#define UART_BUFFER_SIZE                          (50u)
+#define UART_BUFFER_SIZE                          (20u)
+
+#define SEMAPHORE_LIMIT                           (1u)
+
 
 /*******************************************************************************
 * Function Prototypes
@@ -167,7 +168,7 @@ void read_uart_input(uint8_t* input_buffer_ptr);
 cy_socket_t client_handle;
 
 /* Binary semaphore handle to keep track of TCP server connection. */
-SemaphoreHandle_t connect_to_server;
+cy_semaphore_t connect_to_server;
 
 /* Holds the IP address obtained for SoftAP using Wi-Fi Connection Manager (WCM). */
 cy_wcm_ip_address_t softap_ip_address;
@@ -202,6 +203,12 @@ void tcp_client_task(void *arg)
         .port = TCP_SERVER_PORT
     };
 
+    /* IP variable for network utility functions */
+    cy_nw_ip_address_t nw_ip_addr =
+    {
+        .version = NW_IP_IPV4
+    };
+
     /* Initialize Wi-Fi connection manager. */
     result = cy_wcm_init(&wifi_config);
 
@@ -232,10 +239,10 @@ void tcp_client_task(void *arg)
     #endif /* USE_AP_INTERFACE */
 
     /* Create a binary semaphore to keep track of TCP server connection. */
-    connect_to_server = xSemaphoreCreateBinary();
+    cy_rtos_semaphore_init(&connect_to_server, SEMAPHORE_LIMIT, 0);
 
     /* Give the semaphore so as to connect to TCP server.  */
-    xSemaphoreGive(connect_to_server);
+    cy_rtos_semaphore_set(&connect_to_server);
 
     /* Initialize secure socket library. */
     result = cy_socket_init();
@@ -250,7 +257,7 @@ void tcp_client_task(void *arg)
     for(;;)
     {
         /* Wait till semaphore is acquired so as to connect to a TCP server. */
-        xSemaphoreTake(connect_to_server, portMAX_DELAY);
+        cy_rtos_semaphore_get(&connect_to_server, CY_RTOS_NEVER_TIMEOUT);
 
         printf("Connect to TCP server\n");
         printf("Enter the IPv4 address of the TCP Server:\n");
@@ -271,24 +278,24 @@ void tcp_client_task(void *arg)
         /* Allow system to enter deep sleep mode. */
         cyhal_syspm_unlock_deepsleep();
 
-        ip4addr_aton((char *)uart_input,
-                     (ip4_addr_t *)&tcp_server_address.ip_address.ip.v4);
+        cy_nw_str_to_ipv4((char *)uart_input, (cy_nw_ip_address_t *)&nw_ip_addr);
+        tcp_server_address.ip_address.ip.v4 = nw_ip_addr.ip.v4;
 
         /* Connect to the TCP server. If the connection fails, retry
          * to connect to the server for MAX_TCP_SERVER_CONN_RETRIES times.
          */
+        cy_nw_ntoa(&nw_ip_addr, (char *)&uart_input);
         printf("Connecting to TCP Server (IP Address: %s, Port: %d)\n\n",
-                      ip4addr_ntoa((const ip4_addr_t *)&tcp_server_address.ip_address.ip.v4),
-                      TCP_SERVER_PORT);
+                      uart_input, TCP_SERVER_PORT);
 
         result = connect_to_tcp_server(tcp_server_address);
 
         if(result != CY_RSLT_SUCCESS)
         {
             printf("Failed to connect to TCP server.\n");
-            
+
             /* Give the semaphore so as to connect to TCP server.  */
-            xSemaphoreGive(connect_to_server);
+            cy_rtos_semaphore_set(&connect_to_server);
         }
     }
  }
@@ -305,11 +312,18 @@ void tcp_client_task(void *arg)
 cy_rslt_t connect_to_wifi_ap(void)
 {
     cy_rslt_t result;
+    char ip_addr_str[UART_BUFFER_SIZE];
 
     /* Variables used by Wi-Fi connection manager.*/
     cy_wcm_connect_params_t wifi_conn_param;
 
     cy_wcm_ip_address_t ip_address;
+
+    /* IP variable for network utility functions */
+    cy_nw_ip_address_t nw_ip_addr =
+    {
+        .version = NW_IP_IPV4
+    };
 
      /* Set the Wi-Fi SSID, password and security type. */
     memset(&wifi_conn_param, 0, sizeof(cy_wcm_connect_params_t));
@@ -328,15 +342,16 @@ cy_rslt_t connect_to_wifi_ap(void)
         {
             printf("Successfully connected to Wi-Fi network '%s'.\n",
                                 wifi_conn_param.ap_credentials.SSID);
-            printf("IP Address Assigned: %s\n",
-                    ip4addr_ntoa((const ip4_addr_t *)&ip_address.ip.v4));
+            nw_ip_addr.ip.v4 = ip_address.ip.v4;
+            cy_nw_ntoa(&nw_ip_addr, ip_addr_str);
+            printf("IP Address Assigned: %s\n", ip_addr_str);
             return result;
         }
 
         printf("Connection to Wi-Fi network failed with error code %d."
                "Retrying in %d ms...\n", (int)result, WIFI_CONN_RETRY_INTERVAL_MSEC);
 
-        vTaskDelay(pdMS_TO_TICKS(WIFI_CONN_RETRY_INTERVAL_MSEC));
+        cy_rtos_delay_milliseconds(WIFI_CONN_RETRY_INTERVAL_MSEC);
     }
 
     /* Stop retrying after maximum retry attempts. */
@@ -365,7 +380,14 @@ cy_rslt_t connect_to_wifi_ap(void)
  *******************************************************************************/
 static cy_rslt_t softap_start(void)
 {
-    cy_rslt_t result = CY_RSLT_SUCCESS;
+    cy_rslt_t result;
+    char ip_addr_str[UART_BUFFER_SIZE];
+
+    /* IP variable for network utility functions */
+    cy_nw_ip_address_t nw_ip_addr =
+    {
+        .version = NW_IP_IPV4
+    };
 
     /* Initialize the Wi-Fi device as a Soft AP. */
     cy_wcm_ap_credentials_t softap_credentials = {SOFTAP_SSID, SOFTAP_PASSWORD,
@@ -387,8 +409,9 @@ static cy_rslt_t softap_start(void)
         printf("Wi-Fi Device configured as Soft AP\n");
         printf("Connect TCP client device to the network: SSID: %s Password:%s\n",
                 SOFTAP_SSID, SOFTAP_PASSWORD);
-        printf("SofAP IP Address : %s\n\n",
-                ip4addr_ntoa((const ip4_addr_t *)&softap_ip_info.ip_address.ip.v4));
+        nw_ip_addr.ip.v4 = softap_ip_info.ip_address.ip.v4;
+        cy_nw_ntoa(&nw_ip_addr, ip_addr_str);
+        printf("SofAP IP Address : %s\n\n", ip_addr_str);
     }
 
     return result;
@@ -410,9 +433,11 @@ cy_rslt_t create_tcp_client_socket()
 
     /* TCP keep alive parameters. */
     int keep_alive = 1;
+#if defined (COMPONENT_LWIP)
     uint32_t keep_alive_interval = TCP_KEEP_ALIVE_INTERVAL_MS;
     uint32_t keep_alive_count    = TCP_KEEP_ALIVE_RETRY_COUNT;
     uint32_t keep_alive_idle_time = TCP_KEEP_ALIVE_IDLE_TIME_MS;
+#endif
 
     /* Variables used to set socket options. */
     cy_socket_opt_callback_t tcp_recv_option;
@@ -452,7 +477,7 @@ cy_rslt_t create_tcp_client_socket()
         printf("Set socket option: CY_SOCKET_SO_DISCONNECT_CALLBACK failed\n");
     }
 
-
+#if defined (COMPONENT_LWIP)
     /* Set the TCP keep alive interval. */
     result = cy_socket_setsockopt(client_handle, CY_SOCKET_SOL_TCP,
                                   CY_SOCKET_SO_TCP_KEEPALIVE_INTERVAL,
@@ -482,6 +507,7 @@ cy_rslt_t create_tcp_client_socket()
         printf("Set socket option: CY_SOCKET_SO_TCP_KEEPALIVE_IDLE_TIME failed\n");
         return result;
     }
+#endif
 
     /* Enable TCP keep alive. */
     result = cy_socket_setsockopt(client_handle, CY_SOCKET_SOL_SOCKET,
@@ -518,7 +544,7 @@ cy_rslt_t connect_to_tcp_server(cy_socket_sockaddr_t address)
     {
         /* Create a TCP socket */
         conn_result = create_tcp_client_socket();
-        
+
         if(conn_result != CY_RSLT_SUCCESS)
         {
             printf("Socket creation failed!\n");
@@ -526,7 +552,7 @@ cy_rslt_t connect_to_tcp_server(cy_socket_sockaddr_t address)
         }
 
         conn_result = cy_socket_connect(client_handle, &address, sizeof(cy_socket_sockaddr_t));
-        
+
         if (conn_result == CY_RSLT_SUCCESS)
         {
             printf("============================================================\n");
@@ -599,12 +625,12 @@ cy_rslt_t tcp_client_recv_handler(cy_socket_t socket_handle, void *arg)
         sprintf(message_buffer, MSG_INVALID_CMD);
     }
 
-    /* Send acknowledgement to the TCP server in receipt of the message received. */
+    /* Send acknowledgment to the TCP server in receipt of the message received. */
     result = cy_socket_send(socket_handle, message_buffer, strlen(message_buffer),
                             CY_SOCKET_FLAGS_NONE, &bytes_sent);
     if(result == CY_RSLT_SUCCESS)
     {
-        printf("Acknowledgement sent to TCP server\n");
+        printf("Acknowledgment sent to TCP server\n");
     }
 
     return result;
@@ -637,7 +663,7 @@ cy_rslt_t tcp_disconnection_handler(cy_socket_t socket_handle, void *arg)
     printf("Disconnected from the TCP server! \n");
 
     /* Give the semaphore so as to connect to TCP server. */
-    xSemaphoreGive(connect_to_server);
+    cy_rtos_semaphore_set(&connect_to_server);
 
     return result;
 }
@@ -657,8 +683,8 @@ cy_rslt_t tcp_disconnection_handler(cy_socket_t socket_handle, void *arg)
  *******************************************************************************/
 void read_uart_input(uint8_t* input_buffer_ptr)
 {
-    cy_rslt_t result = CY_RSLT_SUCCESS;    
-    uint8_t *ptr = input_buffer_ptr; 
+    cy_rslt_t result = CY_RSLT_SUCCESS;
+    uint8_t *ptr = input_buffer_ptr;
     uint32_t numBytes;
 
     do
@@ -694,12 +720,13 @@ void read_uart_input(uint8_t* input_buffer_ptr)
             }
         }
 
-        vTaskDelay(RTOS_TICK_TO_WAIT);
+        cy_rtos_delay_milliseconds(RTOS_TICK_TO_WAIT);
 
     } while((*ptr != '\r') && (*ptr != '\n'));
 
     /* Terminate string with NULL character. */
     *ptr = '\0';
 }
+
 
 /* [] END OF FILE */
