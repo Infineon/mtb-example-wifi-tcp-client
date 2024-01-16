@@ -8,23 +8,21 @@ This example can be modified to use ThreadX and NetX Duo instead of FreeRTOS and
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-wifi-tcp-client)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjkxMTIiLCJTcGVjIE51bWJlciI6IjAwMi0yOTExMiIsIkRvYyBUaXRsZSI6IlRDUCBjbGllbnQiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiI0LjAuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyMjkxMTIiLCJTcGVjIE51bWJlciI6IjAwMi0yOTExMiIsIkRvYyBUaXRsZSI6IlRDUCBjbGllbnQiLCJyaWQiOiJzZGFrIiwiRG9jIHZlcnNpb24iOiI0LjEuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJJQ1ciLCJEb2MgRmFtaWx5IjoiUFNPQyJ9)
 
 
 ## Requirements
 
-
-
-- [ModusToolbox&trade; software](https://www.infineon.com/modustoolbox) v3.0 or later (tested with v3.0)
+- [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) v3.1 or later (tested with v3.1)
 - Board support package (BSP) minimum required version: 4.0.0
 - Programming language: C
-- Associated parts: All [PSoC&trade; 6 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-6-32-bit-arm-cortex-m4-mcu) parts, [AIROC&trade; CYW20819 Bluetooth&reg; & Bluetooth&reg; LE system on chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-bluetooth-le-bluetooth-multiprotocol/airoc-bluetooth-le-bluetooth/cyw20819), [AIROC&trade; CYW43012 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw43012), [AIROC&trade; CYW4343W Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw4343w), [AIROC&trade; CYW4373 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-5-802.11ac/cyw4373), [AIROC&trade; CYW43439 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw43439)
+- Associated parts: All [PSoC&trade; 6 MCU](https://www.infineon.com/cms/en/product/microcontroller/32-bit-psoc-arm-cortex-microcontroller/psoc-6-32-bit-arm-cortex-m4-mcu) parts, [AIROC&trade; CYW20819 Bluetooth&reg; & Bluetooth&reg; LE SoC](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-bluetooth-le-bluetooth-multiprotocol/airoc-bluetooth-le-bluetooth/cyw20819), [AIROC&trade; CYW43012 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw43012), [AIROC&trade; CYW4343W Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw4343w), [AIROC&trade; CYW4373 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-5-802.11ac/cyw4373), [AIROC&trade; CYW43439 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-4-802.11n/cyw43439),[AIROC&trade; CYW43022 Wi-Fi & Bluetooth&reg; combo chip](https://www.infineon.com/cms/en/product/wireless-connectivity/airoc-wi-fi-plus-bluetooth-combos/wi-fi-5-802.11ac/cyw43022)
 
 ## Supported toolchains (make variable 'TOOLCHAIN')
 
-- GNU Arm&reg; embedded compiler v10.3.1 (`GCC_ARM`) - Default value of `TOOLCHAIN`
-- Arm&reg; compiler v6.16 (`ARM`)
-- IAR C/C++ compiler v9.30.1 (`IAR`)
+- GNU Arm&reg; Embedded Compiler v11.3.1 (`GCC_ARM`) – Default value of `TOOLCHAIN`
+- Arm&reg; Compiler v6.16 (`ARM`)
+- IAR C/C++ Compiler v9.30.1 (`IAR`)
 
 ## Supported kits (make variable 'TARGET')
 
@@ -35,7 +33,7 @@ This example can be modified to use ThreadX and NetX Duo instead of FreeRTOS and
 - [PSoC&trade; 62S1 Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CYW9P62S1-43012EVB-01) (`CYW9P62S1-43012EVB-01`)
 - [PSoC&trade; 62S3 Wi-Fi Bluetooth&reg; Prototyping Kit](https://www.infineon.com/CY8CPROTO-062S3-4343W) (`CY8CPROTO-062S3-4343W`)
 - [PSoC&trade; 64 "Secure Boot" Wi-Fi Bluetooth&reg; Pioneer Kit](https://www.infineon.com/CY8CKIT-064B0S2-4343W) (`CY8CKIT-064B0S2-4343W`)
-- [PSoC&trade; 62S2 Evaluation Kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2`)
+- [PSoC&trade; 62S2 Evaluation Kit](https://www.infineon.com/CY8CEVAL-062S2) (`CY8CEVAL-062S2-LAI-4373M2`, `CY8CEVAL-062S2-MUR-43439M2`,`CY8CEVAL-062S2-CYW43022CUB`)
 
 ## Hardware setup
 
@@ -46,115 +44,114 @@ This example uses the board's default configuration. See the kit user guide to e
 
 ## Software setup
 
-1. Install a terminal emulator if you don't have one. Instructions in this document use [Tera Term](https://ttssh2.osdn.jp/index.html.en).
+1. Install a terminal emulator if you don't have one. Instructions in this document use [Tera Term](https://teratermproject.github.io/index-en.html).
 
 2. Install a Python interpreter if you don't have one. This code example is tested using [Python 3.7.7](https://www.python.org/downloads/release/python-377/).
 
-
 ## Using the code example
 
-Create the project and open it using one of the following:
+### Create the project
 
-<details><summary><b>In Eclipse IDE for ModusToolbox&trade; software</b></summary>
+The ModusToolbox&trade; tools package provides the Project Creator as both a GUI tool and a command line tool.
 
-1. Click the **New Application** link in the **Quick Panel** (or, use **File** > **New** > **ModusToolbox&trade; Application**). This launches the [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool.
+<details><summary><b>Use Project Creator GUI</b></summary>
 
-2. Pick a kit supported by the code example from the list shown in the **Project Creator - Choose Board Support Package (BSP)** dialog.
+1. Open the Project Creator GUI tool.
 
-   When you select a supported kit, the example is reconfigured automatically to work with the kit. To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can use the Library Manager to select or update the BSP and firmware libraries used in this application. To access the Library Manager, click the link from the **Quick Panel**.
+   There are several ways to do this, including launching it from the dashboard or from inside the Eclipse IDE. For more details, see the [Project Creator user guide](https://www.infineon.com/ModusToolboxProjectCreator) (locally available at *{ModusToolbox&trade; install directory}/tools_{version}/project-creator/docs/project-creator.pdf*).
 
-   You can also just start the application creation process again and select a different kit.
+2. On the **Choose Board Support Package (BSP)** page, select a kit supported by this code example. See [Supported kits](#supported-kits-make-variable-target).
 
-   If you want to use the application for a kit not listed here, you may need to update the source files. If the kit does not have the required resources, the application may not work.
+   > **Note:** To use this code example for a kit not listed here, you may need to update the source files. If the kit does not have the required resources, the application may not work.
 
-3. In the **Project Creator - Select Application** dialog, choose the example by enabling the checkbox.
+3. On the **Select Application** page:
 
-4. (Optional) Change the suggested **New Application Name**.
+   a. Select the **Applications(s) Root Path** and the **Target IDE**.
 
-5. The **Application(s) Root Path** defaults to the Eclipse workspace which is usually the desired location for the application. If you want to store the application in a different location, you can change the *Application(s) Root Path* value. Applications that share libraries should be in the same root path.
+   > **Note:** Depending on how you open the Project Creator tool, these fields may be pre-selected for you.
 
-6. Click **Create** to complete the application creation process.
+   b.	Select this code example from the list by enabling its check box.
 
-For more details, see the [Eclipse IDE for ModusToolbox&trade; software user guide](https://www.infineon.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mt_ide_user_guide.pdf*).
+   > **Note:** You can narrow the list of displayed examples by typing in the filter box.
+
+   c. (Optional) Change the suggested **New Application Name** and **New BSP Name**.
+
+   d. Click **Create** to complete the application creation process.
 
 </details>
 
-<details><summary><b>In command-line interface (CLI)</b></summary>
+<details><summary><b>Use Project Creator CLI</b></summary>
 
-ModusToolbox&trade; software provides the Project Creator as both a GUI tool and the command line tool, "project-creator-cli". The CLI tool can be used to create applications from a CLI terminal or from within batch files or shell scripts. This tool is available in the *{ModusToolbox&trade; software install directory}/tools_{version}/project-creator/* directory.
+The 'project-creator-cli' tool can be used to create applications from a CLI terminal or from within batch files or shell scripts. This tool is available in the *{ModusToolbox&trade; install directory}/tools_{version}/project-creator/* directory.
 
-Use a CLI terminal to invoke the "project-creator-cli" tool. On Windows, use the command line "modus-shell" program provided in the ModusToolbox&trade; software installation instead of a standard Windows command-line application. This shell provides access to all ModusToolbox&trade; software tools. You can access it by typing `modus-shell` in the search box in the Windows menu. In Linux and macOS, you can use any terminal application.
+Use a CLI terminal to invoke the 'project-creator-cli' tool. On Windows, use the command-line 'modus-shell' program provided in the ModusToolbox&trade; installation instead of a standard Windows command-line application. This shell provides access to all ModusToolbox&trade; tools. You can access it by typing "modus-shell" in the search box in the Windows menu. In Linux and macOS, you can use any terminal application.
 
-The "project-creator-cli" tool has the following arguments:
+The following example clones the "[mtb-example-wifi-tcp-client](https://github.com/Infineon/mtb-example-wifi-tcp-client)" application with the desired name "TcpClient" configured for the *CY8CPROTO-062S2-43439* BSP into the specified working directory, *C:/mtb_projects*:
+
+   ```
+   project-creator-cli --board-id CY8CPROTO-062S2-43439 --app-id mtb-example-wifi-tcp-client --user-app-name TcpClient --target-dir "C:/mtb_projects"
+   ```
+
+The 'project-creator-cli' tool has the following arguments:
 
 Argument | Description | Required/optional
 ---------|-------------|-----------
-`--board-id` | Defined in the `<id>` field of the [BSP](https://github.com/Infineon?q=bsp-manifest&type=&language=&sort=) manifest | Required
-`--app-id`   | Defined in the `<id>` field of the [CE](https://github.com/Infineon?q=ce-manifest&type=&language=&sort=) manifest | Required
+`--board-id` | Defined in the <id> field of the [BSP](https://github.com/Infineon?q=bsp-manifest&type=&language=&sort=) manifest | Required
+`--app-id`   | Defined in the <id> field of the [CE](https://github.com/Infineon?q=ce-manifest&type=&language=&sort=) manifest | Required
 `--target-dir`| Specify the directory in which the application is to be created if you prefer not to use the default current working directory | Optional
 `--user-app-name`| Specify the name of the application if you prefer to have a name other than the example's default name | Optional
 
-<br />
-
-The following example clones the "[mtb-example-wifi-tcp-client](https://github.com/Infineon/mtb-example-wifi-tcp-client)" application with the desired name "TcpClient" configured for the *CY8CPROTO-062-4343W* BSP into the specified working directory, *C:/mtb_projects*:
-
-   ```
-   project-creator-cli --board-id CY8CPROTO-062-4343W --app-id mtb-example-wifi-tcp-client --user-app-name TcpClient --target-dir "C:/mtb_projects"
-   ```
-
-**Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For details, see the "Project creator tools" section of the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
-
-To work with a different supported kit later, use the [Library Manager](https://www.infineon.com/ModusToolboxLibraryManager) to choose the BSP for the supported kit. You can invoke the Library Manager GUI tool from the terminal using `make library-manager` command or use the Library Manager CLI tool "library-manager-cli" to change the BSP.
-
-The "library-manager-cli" tool has the following arguments:
-
-Argument | Description | Required/optional
----------|-------------|-----------
-`--add-bsp-name` | Name of the BSP that should be added to the application | Required
-`--set-active-bsp` | Name of the BSP that should be as active BSP for the application | Required
-`--add-bsp-version`| Specify the version of the BSP that should be added to the application if you do not wish to use the latest from manifest | Optional
-`--add-bsp-location`| Specify the location of the BSP (local/shared) if you prefer to add the BSP in a shared path | Optional
-
-<br />
-
-Following example adds the CY8CPROTO-062-4343W BSP to the already created application and makes it the active BSP for the app:
-
-   ```
-   library-manager-cli --project "C:/mtb_projects/TcpClient" --add-bsp-name CY8CPROTO-062-4343W --add-bsp-version "latest-v4.X" --add-bsp-location "local"
-
-   library-manager-cli --project "C:/mtb_projects/TcpClient" --set-active-bsp APP_CY8CPROTO-062-4343W
-   ```
+> **Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For details, see the "Project creator tools" section of the [ModusToolbox&trade; tools package user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at {ModusToolbox&trade; install directory}/docs_{version}/mtb_user_guide.pdf).
 
 </details>
 
-<details><summary><b>In third-party IDEs</b></summary>
+### Open the project
 
-Use one of the following options:
+After the project has been created, you can open it in your preferred development environment.
 
-- **Use the standalone [Project Creator](https://www.infineon.com/ModusToolboxProjectCreator) tool:**
+<details><summary><b>Eclipse IDE</b></summary>
 
-   1. Launch Project Creator from the Windows Start menu or from *{ModusToolbox&trade; software install directory}/tools_{version}/project-creator/project-creator.exe*.
+If you opened the Project Creator tool from the included Eclipse IDE, the project will open in Eclipse automatically.
 
-   2. In the initial **Choose Board Support Package** screen, select the BSP, and click **Next**.
-
-   3. In the **Select Application** screen, select the appropriate IDE from the **Target IDE** drop-down menu.
-
-   4. Click **Create** and follow the instructions printed in the bottom pane to import or open the exported project in the respective IDE.
-
-<br />
-
-- **Use command-line interface (CLI):**
-
-   1. Follow the instructions from the **In command-line interface (CLI)** section to create the application.
-
-   2. Export the application to a supported IDE using the `make <ide>` command.
-
-   3. Follow the instructions displayed in the terminal to create or import the application as an IDE project.
-
-For a list of supported IDEs and more details, see the "Exporting to IDEs" section of the [ModusToolbox&trade; software user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; software install directory}/docs_{version}/mtb_user_guide.pdf*).
+For more details, see the [Eclipse IDE for ModusToolbox&trade; user guide](https://www.infineon.com/MTBEclipseIDEUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_ide_user_guide.pdf*).
 
 </details>
 
+
+<details><summary><b>Visual Studio (VS) Code</b></summary>
+
+Launch VS Code manually, and then open the generated *{project-name}.code-workspace* file located in the project directory.
+
+For more details, see the [Visual Studio Code for ModusToolbox&trade; user guide](https://www.infineon.com/MTBVSCodeUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_vscode_user_guide.pdf*).
+
+</details>
+
+
+<details><summary><b>Keil µVision</b></summary>
+
+Double-click the generated *{project-name}.cprj* file to launch the Keil µVision IDE.
+
+For more details, see the [Keil µVision for ModusToolbox&trade; user guide](https://www.infineon.com/MTBuVisionUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_uvision_user_guide.pdf*).
+
+</details>
+
+
+<details><summary><b>IAR Embedded Workbench</b></summary>
+
+Open IAR Embedded Workbench manually, and create a new project. Then select the generated *{project-name}.ipcf* file located in the project directory.
+
+For more details, see the [IAR Embedded Workbench for ModusToolbox&trade; user guide](https://www.infineon.com/MTBIARUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mt_iar_user_guide.pdf*).
+
+</details>
+
+
+<details><summary><b>Command line</b></summary>
+
+If you prefer to use the CLI, open the appropriate terminal, and navigate to the project directory. On Windows, use the command-line 'modus-shell' program; on Linux and macOS, you can use any terminal application. From there, you can run various `make` commands.
+
+For more details, see the [ModusToolbox&trade; tools package user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at *{ModusToolbox&trade; install directory}/docs_{version}/mtb_user_guide.pdf*).
+
+</details>
 
 ## Operation
 
@@ -385,6 +382,7 @@ Document title: *CE229112* - *TCP client*
  3.0.0   | Major update to support ModusToolbox&trade; v3.0 and BSPs v4.X. This version is not backward compatible with previous versions of ModusToolbox&trade; software
  3.1.0   | Added support for CY8CKIT-064B0S2-4343W
  4.0.0   | Updated to use abstraction-rtos to support various RTOS environments
+ 4.1.0   | Added support for CY8CEVAL-062S2-CYW43022CUB
 
 
 <br />
